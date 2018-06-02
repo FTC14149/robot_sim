@@ -18,15 +18,19 @@ import java.lang.Math;
 
 public class RobotWorldView extends View {
     Bitmap robotBitmap;
+    Bitmap fieldBitmap;
     Matrix robotMatrix;
+    Matrix fieldMatrix;
     float robotX, robotY, robotRot;
     float robotSpeed;
     RobotWorld robotWorld;
 
     public RobotWorldView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        fieldBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.field_diagram);
         robotBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.robot_image);
         robotMatrix = new Matrix();
+        fieldMatrix = new Matrix();
         requestFocus();
     }
 
@@ -60,6 +64,7 @@ public class RobotWorldView extends View {
 
     public void onDraw(Canvas canvas) {
         canvas.drawARGB(255,160,160,255);
+        canvas.drawBitmap(fieldBitmap,fieldMatrix,null);
         robotMatrix.reset();
         robotMatrix.postTranslate(-46,-50);
         robotMatrix.postRotate(robotWorld.robot.rot);
