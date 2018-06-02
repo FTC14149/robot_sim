@@ -64,8 +64,12 @@ public class RobotWorldView extends View {
 
     public void onDraw(Canvas canvas) {
         canvas.drawARGB(255,160,160,255);
+        fieldMatrix.reset();
+        float size = (float)canvas.getWidth()/(float)fieldBitmap.getWidth();
+        fieldMatrix.postScale(size,size);
         canvas.drawBitmap(fieldBitmap,fieldMatrix,null);
         robotMatrix.reset();
+        robotMatrix.postScale(size,size);
         robotMatrix.postTranslate(-46,-50);
         robotMatrix.postRotate(robotWorld.robot.rot);
         robotMatrix.postTranslate(robotWorld.robot.x,robotWorld.robot.y);
