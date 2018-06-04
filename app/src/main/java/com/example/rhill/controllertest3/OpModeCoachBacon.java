@@ -1,11 +1,10 @@
 package com.example.rhill.controllertest3;
-import java.lang.Math;
 
 /**
- * Created by rhill on 5/4/18.
+ * Created by rhill on 6/3/18.
  */
 
-public class OpModeTest1 extends FakeOpMode {
+public class OpModeCoachBacon extends FakeOpMode {
     public void init() {
         this.telemetry.AddData(this.getClass().getSimpleName(), "Started");
     }
@@ -28,5 +27,4 @@ public class OpModeTest1 extends FakeOpMode {
     }
     public void stop() {
     }
-
 }

@@ -20,6 +20,9 @@ import android.widget.TextView;
 // We need to use this Handler package
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RobotWorld implements Runnable {
     // This is simply a container class for everything in the Robot's world
     public Robot robot;
@@ -35,13 +38,17 @@ public class RobotWorld implements Runnable {
     RobotWorldView robotWorldView;
 
     // Attach the OpMode subclass - we'll call it's loop() method periodically
+    ArrayList<FakeOpMode> opModes;
     FakeOpMode opMode;
+    int opModeSelect;
 
     public RobotWorld(TextView telemetryTextView) {
         robot = new Robot();
         telemetry = new Telemetry(telemetryTextView);
         gamepad1 = new Gamepad();
         gamepad2 = new Gamepad();
+        opModeSelect = -1;
+        opModes = new ArrayList<FakeOpMode>();
     }
 
     public void AttachRobotWorldView(RobotWorldView robotWorldView) {
@@ -51,7 +58,9 @@ public class RobotWorld implements Runnable {
     }
 
     public void AttachOpMode(FakeOpMode opMode) {
-        this.opMode = opMode;
+        this.opModes.add(opMode);
+        this.opModeSelect += 1;
+        this.opMode = opModes.get(this.opModeSelect);
     }
 
     @Override
@@ -69,6 +78,18 @@ public class RobotWorld implements Runnable {
     public void KeyDown(int keyCode, KeyEvent event) {
         // if(event.getDeviceId() == 0)  TODO: bind device IDs to gamepad1/gamepad2
         // TODO: if source == gamepad1:
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+            this.opModeSelect += 1;
+            this.opModeSelect = this.opModeSelect % opModes.size();
+            this.opMode = opModes.get(this.opModeSelect);
+            this.opMode.init();
+        }
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_L1) {
+            this.opModeSelect -= 1;
+            if(this.opModeSelect < 0) this.opModeSelect = opModes.size() - 1;
+            this.opMode = opModes.get(this.opModeSelect);
+            this.opMode.init();
+        }
         gamepad1.HandleKeyEvent(keyCode, true);
     }
 

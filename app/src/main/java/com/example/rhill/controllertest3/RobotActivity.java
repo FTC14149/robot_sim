@@ -21,6 +21,7 @@ public class RobotActivity extends AppCompatActivity {
     //    d. loop() - kid overrides with code to run every cycle
     //    e. stop() - kid overrides with code to run when their OpMode stops
     OpModeTest1 opMode;
+    OpModeCoachBacon opMode2;
     RobotWorld robotWorld;
     RobotWorldView robotWorldView;
 
@@ -36,10 +37,8 @@ public class RobotActivity extends AppCompatActivity {
         robotWorldView.AttachRobotWorld(robotWorld);
         robotWorld.AttachRobotWorldView(robotWorldView);
         // Instantiate the OpMode we'll use
-        opMode = new OpModeTest1();
-        opMode.Attach(robotWorld);
-        robotWorld.AttachOpMode(opMode);
-        robotWorld.telemetry.AddData("Info", "Starting RobotActivity");
+        opMode = new OpModeTest1(); opMode.Attach(robotWorld);
+        opMode2 = new OpModeCoachBacon(); opMode2.Attach(robotWorld);
         // Kick off the opmode
         opMode.init();
     }

@@ -14,6 +14,8 @@ public class FakeOpMode {
         this.gamepad1 = robotWorld.gamepad1;
         this.gamepad2 = robotWorld.gamepad2;
         this.robot = robotWorld.robot;
+        robotWorld.AttachOpMode(this);
+        this.telemetry.AddData(this.getClass().getSimpleName(), "Attached");
     }
     public void init() {
     }
