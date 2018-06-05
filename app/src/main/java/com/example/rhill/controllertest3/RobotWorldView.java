@@ -16,13 +16,14 @@ import java.lang.Math;
  * Created by rhill on 4/30/18.
  */
 
+// This is the main View for the application.  It contains the area the robot can
+// move around in, and the robot.
+// TODO: upgrade the robot world to have a physics engine in it
 public class RobotWorldView extends View {
     Bitmap robotBitmap;
     Bitmap fieldBitmap;
     Matrix robotMatrix;
     Matrix fieldMatrix;
-    float robotX, robotY, robotRot;
-    float robotSpeed;
     RobotWorld robotWorld;
 
     public RobotWorldView(Context context, AttributeSet attrs) {
