@@ -29,16 +29,17 @@ public class RobotActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot);
-        // Create basic robotics and simulation objects
-        robotWorld = new RobotWorld((TextView)findViewById(R.id.TelemetryText));
         // Attach the robotWorld to RobotWorldView, which will field touch/gamepad events
         // and send them to the robotWorld:
         robotWorldView = this.findViewById(R.id.RobotWorldViewID);
+        // Create basic robotics and simulation objects
+        robotWorld = new RobotWorld(robotWorldView,(TextView)findViewById(R.id.TelemetryText));
         robotWorldView.AttachRobotWorld(robotWorld);
-        robotWorld.AttachRobotWorldView(robotWorldView);
         // Instantiate the OpMode we'll use
         opMode = new OpModeTest1(); opMode.Attach(robotWorld);
         opMode2 = new OpModeCoachBacon(); opMode2.Attach(robotWorld);
+        // Start the physics loop in robotWorld
+        robotWorld.StartPhysics();
         // Kick off the opmode
         opMode.init();
     }

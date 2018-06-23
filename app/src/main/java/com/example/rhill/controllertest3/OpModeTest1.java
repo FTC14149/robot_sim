@@ -12,19 +12,10 @@ public class OpModeTest1 extends FakeOpMode {
     public void init_loop() {
     }
     public void loop() {
-        robot.speed = gamepad1.left_stick_y*6;
-        robot.rot += gamepad1.right_stick_x*4;
-        if(gamepad1.a) {
-            robot.x = 400;
-            robot.y = 600;
-            robot.rot = 0;
-        }
-        //if(gamepad1.dpad_left) {
-        //    robot.rot -= 4;
-        //}
-        //if(gamepad1.dpad_right) {
-        //    robot.rot += 4;
-        //}
+        //robot.LeftMotorTorque(gamepad1.left_stick_y);
+        //robot.RightMotorTorque(gamepad1.right_stick_y);
+        robot.LeftMotorImpulse(gamepad1.left_stick_y);
+        robot.RightMotorImpulse(gamepad1.right_stick_y);
     }
     public void stop() {
     }

@@ -20,7 +20,6 @@ import java.lang.Math;
 // move around in, and the robot.
 // TODO: upgrade the robot world to have a physics engine in it
 public class RobotWorldView extends View {
-    Bitmap robotBitmap;
     Bitmap fieldBitmap;
     Matrix robotMatrix;
     Matrix fieldMatrix;
@@ -28,9 +27,9 @@ public class RobotWorldView extends View {
 
     public RobotWorldView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        fieldBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.field_diagram);
-        robotBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.robot_image);
-        robotMatrix = new Matrix();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        fieldBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.field_diagram,options);
         fieldMatrix = new Matrix();
         requestFocus();
     }
@@ -69,12 +68,15 @@ public class RobotWorldView extends View {
         float size = (float)canvas.getWidth()/(float)fieldBitmap.getWidth();
         fieldMatrix.postScale(size,size);
         canvas.drawBitmap(fieldBitmap,fieldMatrix,null);
-        robotMatrix.reset();
-        robotMatrix.postScale(size,size);
-        robotMatrix.postTranslate(-46,-50);
-        robotMatrix.postRotate(robotWorld.robot.rot);
-        robotMatrix.postTranslate(robotWorld.robot.x,robotWorld.robot.y);
-        canvas.drawBitmap(robotBitmap,robotMatrix,null);
+        //robotMatrix.postTranslate(19,21);
+        /*
+        robotMatrix.postTranslate(365,365);
+        robotMatrix.postScale(size,size,0,0);
+        */
+        canvas.drawBitmap(robotWorld.robot.bitmap,robotWorld.robot.DrawMatrix(size),null);
+        for(int i=0;i<robotWorld.boxes.size();i++) {
+            canvas.drawBitmap(robotWorld.boxes.get(i).bitmap, robotWorld.boxes.get(i).DrawMatrix(size), null);
+        }
      }
 
 }

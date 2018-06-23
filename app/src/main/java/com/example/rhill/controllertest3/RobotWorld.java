@@ -1,9 +1,21 @@
 package com.example.rhill.controllertest3;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
+
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.joints.WeldJoint;
+import org.jbox2d.dynamics.joints.WeldJointDef;
 
 /**
  * Created by rhill on 5/6/18.
@@ -29,6 +41,8 @@ public class RobotWorld implements Runnable {
     public Telemetry telemetry;
     public Gamepad gamepad1;
     public Gamepad gamepad2;
+    public MovableObject box1;
+    public ArrayList<MovableObject> boxes;
 
     // The Handler class will give us periodic callbacks
     Handler handler;
@@ -42,17 +56,71 @@ public class RobotWorld implements Runnable {
     FakeOpMode opMode;
     int opModeSelect;
 
-    public RobotWorld(TextView telemetryTextView) {
-        robot = new Robot();
+    // The physics world and its components
+    Vec2 gravity = new Vec2(0, 0.0f);
+    World physicsWorld = new World(gravity);
+    float timeStep = 1.0f/30.0f;
+    int velocityIterations = 6;
+    int positionIterations = 2;
+
+    public RobotWorld(RobotWorldView robotWorldView, TextView telemetryTextView) {
+        this.robotWorldView = robotWorldView;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap robotBitmap = BitmapFactory.decodeResource(robotWorldView.getResources(),R.drawable.robot_image,options);
+        robot = new Robot(physicsWorld, null ,robotBitmap, 0.5f, 0.2f);
+        Bitmap boxBitmap = BitmapFactory.decodeResource(robotWorldView.getResources(),R.drawable.box,options);
+        boxes = new ArrayList<MovableObject>();
+        for(int y=0;y<5;y++) {
+            for (int x = 0; x < 5; x++) {
+                Body boxBody = CreateBox(1.5f + 0.25f * x, 1.5f + 0.25f * y, 0.20f, 0.20f, 0.0001f, 0.3f);
+                box1 = new MovableObject(boxBody, boxBitmap);
+                boxes.add(box1);
+            }
+        }
+
         telemetry = new Telemetry(telemetryTextView);
         gamepad1 = new Gamepad();
         gamepad2 = new Gamepad();
         opModeSelect = -1;
         opModes = new ArrayList<FakeOpMode>();
+        float s = 3.56f;  // World size
+        float t = 0.10f;   // Wall thickness
+        CreateWall(-t,-t,0,s+t);  // Left wall
+        CreateWall(-t,-t,s+t,0);  // Bottom wall
+        CreateWall(s,-t, s+t,s+t); // Right wall
+        CreateWall(-t,s,s+t, s+t); // Top wall
     }
 
-    public void AttachRobotWorldView(RobotWorldView robotWorldView) {
-        this.robotWorldView = robotWorldView;
+    private void CreateWall(float l, float b, float r, float t) {
+        BodyDef wallDef = new BodyDef();
+        wallDef.position.set((r+l)/2,(t+b)/2);
+        Body wallBody = physicsWorld.createBody(wallDef);
+        PolygonShape wallBox = new PolygonShape();
+        wallBox.setAsBox((r-l)/2, (t-b)/2);
+        wallBody.createFixture(wallBox, 0);
+    }
+
+    private Body CreateBox(float x, float y, float w, float h, float m, float fric) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DYNAMIC;
+        bodyDef.position.set(x,y);
+        //bodyDef.setAngle(35 * 3.14f / 180f);
+        bodyDef.linearDamping = 1e6f;
+        bodyDef.angularDamping = 1e6f;
+        Body body = physicsWorld.createBody(bodyDef);
+        PolygonShape dynamicBox = new PolygonShape();
+        dynamicBox.setAsBox(w/2, h/2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = dynamicBox;
+        fixtureDef.setDensity(m);
+        fixtureDef.friction = fric;
+        fixtureDef.restitution = 0.3f;
+        body.createFixture(fixtureDef);
+        return body;
+    }
+
+    public void StartPhysics() {
         handler = new Handler();
         handler.post(this);
     }
@@ -72,9 +140,9 @@ public class RobotWorld implements Runnable {
     public void run() {
         // Run the kids' opmode loop code
         opMode.loop();
-        // Run the physics loop functions
-        robot.y += robot.speed*Math.cos(3.14/180.0*robot.rot);
-        robot.x -= robot.speed*Math.sin(3.14/180.0*robot.rot);
+        // Run the physics loop
+        physicsWorld.step(timeStep, velocityIterations, positionIterations);
+
         // Let the screen know we want to update
         robotWorldView.invalidate();
         handler.postDelayed(this,30);
