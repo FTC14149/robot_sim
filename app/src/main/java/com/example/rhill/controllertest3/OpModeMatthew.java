@@ -12,10 +12,8 @@ public class OpModeMatthew extends FakeOpMode {
     public void init_loop() {
     }
     public void loop() {
-        float forward = gamepad1.left_stick_y;
-        float steer = gamepad1.right_stick_x;
-        robot.LeftMotorTorque(forward-0.5f*steer);
-        robot.RightMotorTorque(forward+0.5f*steer);
+        robot.LeftMotorTorque(gamepad1.left_stick_y);
+        robot.RightMotorTorque(gamepad1.right_stick_y);
     }
     public void stop() {
     }
