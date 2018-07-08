@@ -21,7 +21,16 @@ public class RobotActivity extends AppCompatActivity {
     //    d. loop() - kid overrides with code to run every cycle
     //    e. stop() - kid overrides with code to run when their OpMode stops
     OpModeTest1 opMode;
-    OpModeCoachBacon opMode2;
+    OpModeCoachBacon opModeCoachBacon;
+    OpModeCoachHam opModeCoachHam;
+    OpModeCoachDonuts opModeCoachDonuts;
+    OpModeCoachTamal opModeCoachTamal;
+    OpModeMatthew opModeMatthew;
+    OpModeVish opModeVish;
+    OpModeTyler opModeTyler;
+    OpModeRaina opModeRaina;
+    OpModeGabi opModeGabi;
+    OpModeGus opModeGus;
     RobotWorld robotWorld;
     RobotWorldView robotWorldView;
 
@@ -37,7 +46,16 @@ public class RobotActivity extends AppCompatActivity {
         robotWorldView.AttachRobotWorld(robotWorld);
         // Instantiate the OpMode we'll use
         opMode = new OpModeTest1(); opMode.Attach(robotWorld);
-        opMode2 = new OpModeCoachBacon(); opMode2.Attach(robotWorld);
+        opModeCoachBacon = new OpModeCoachBacon(); opModeCoachBacon.Attach(robotWorld);
+        opModeCoachHam = new OpModeCoachHam(); opModeCoachHam.Attach(robotWorld);
+        opModeCoachDonuts = new OpModeCoachDonuts(); opModeCoachDonuts.Attach(robotWorld);
+        opModeCoachTamal = new OpModeCoachTamal(); opModeCoachTamal.Attach(robotWorld);
+        opModeMatthew = new OpModeMatthew(); opModeMatthew.Attach(robotWorld);
+        opModeVish = new OpModeVish(); opModeVish.Attach(robotWorld);
+        opModeTyler = new OpModeTyler(); opModeTyler.Attach(robotWorld);
+        opModeRaina = new OpModeRaina(); opModeRaina.Attach(robotWorld);
+        opModeGabi = new OpModeGabi(); opModeGabi.Attach(robotWorld);
+        opModeGus = new OpModeGus(); opModeGus.Attach(robotWorld);
         // Start the physics loop in robotWorld
         robotWorld.StartPhysics();
         // Kick off the opmode
