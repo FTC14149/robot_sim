@@ -13,8 +13,8 @@ public class OpModeTest1 extends FakeOpMode {
     }
     int distance_to_go;
     public void loop() {
-        //robot.LeftMotorTorque(gamepad1.left_stick_y);
-        //robot.RightMotorTorque(gamepad1.right_stick_y);
+        robot.LeftMotorTorque(gamepad1.left_stick_y);
+        robot.RightMotorTorque(gamepad1.right_stick_y);
         if(gamepad1.a) {
             distance_to_go = 50;
         }
