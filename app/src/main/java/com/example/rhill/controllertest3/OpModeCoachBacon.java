@@ -26,6 +26,11 @@ public class OpModeCoachBacon extends FakeOpMode {
             robot.LeftMotorTorque(gamepad1.left_stick_y);
             robot.RightMotorTorque(gamepad1.right_stick_y);
         }
+        if(robot.frontSensorTouching) {
+            this.telemetry.AddData(this.getClass().getSimpleName(), "Touching");
+        } else {
+            this.telemetry.AddData(this.getClass().getSimpleName(), "Not Touching");
+        }
     }
     public void stop() {
     }

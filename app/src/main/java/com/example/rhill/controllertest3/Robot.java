@@ -2,13 +2,18 @@ package com.example.rhill.controllertest3;
 
 import android.graphics.Bitmap;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.WeldJoint;
 import org.jbox2d.dynamics.joints.WeldJointDef;
 
@@ -16,7 +21,8 @@ import org.jbox2d.dynamics.joints.WeldJointDef;
  * Created by rhill on 5/6/18.
  */
 
-public class Robot extends MovableObject {
+public class Robot extends MovableObject implements ContactListener {
+    World world;
     public float speed;
     Vec2 leftwheel = new Vec2(-1.0f,1.0f);  // Location of left wheel in body coordinates
     Vec2 rightwheel = new Vec2(1.0f,1.0f);  // Location of right wheel in body coordinates
@@ -24,8 +30,11 @@ public class Robot extends MovableObject {
     Body robotBody;
     Body leftWheel;
     Body rightWheel;
+    Body frontSensor;
+    boolean frontSensorTouching;
     public Robot(World world, Body body, Bitmap bitmap, float x, float y) {
         super(body,bitmap);
+        this.world = world;
         float robotRadius = 0.19f/100.0f;
         float robotInitialPosition = 1.1f;
         // Robot body
@@ -100,10 +109,38 @@ public class Robot extends MovableObject {
         rightWheelJointDef.collideConnected = false;
         WeldJoint rightWheelJoint = (WeldJoint) world.createJoint(rightWheelJointDef);
 
+        BodyDef frontSensorDef = new BodyDef();
+        frontSensorDef.type = BodyType.DYNAMIC;
+        frontSensorDef.position.set(robotInitialPosition,robotInitialPosition-robotRadius-0.02f);
+        frontSensorDef.linearDamping = 10000000.0f;
+        frontSensorDef.angularDamping = 100.0f;
+        frontSensor = world.createBody(frontSensorDef);
+
+        PolygonShape frontSensorBox = new PolygonShape();
+        frontSensorBox.setAsBox(0.01f/2, 0.01f/2);
+        FixtureDef frontSensorFixtureDef = new FixtureDef();
+        frontSensorFixtureDef.shape = frontSensorBox;
+        frontSensorFixtureDef.setDensity(1);
+        frontSensorFixtureDef.friction = 0.3f;
+        frontSensorFixtureDef.restitution = 0.3f;
+        frontSensor.createFixture(frontSensorFixtureDef);
+
+        WeldJointDef frontSensorJointDef = new WeldJointDef();
+        frontSensorJointDef.bodyA = frontSensor;
+        frontSensorJointDef.bodyB = robotBody;
+        frontSensorJointDef.localAnchorA.x = 0.0f;
+        frontSensorJointDef.localAnchorA.y = 0.0f;
+        frontSensorJointDef.bodyB = robotBody;
+        frontSensorJointDef.localAnchorB.x = 0.0f;
+        frontSensorJointDef.localAnchorB.y = -0.21f;
+        frontSensorJointDef.collideConnected = false;
+        WeldJoint frontSensorJoint = (WeldJoint) world.createJoint(frontSensorJointDef);
+
         x = 200;
         y = 200;
         rot = 0;
         speed = 1;
+        world.setContactListener(this);
     }
     public void ApplyForce(Vec2 force, Vec2 point) {
         //body.applyForce(body.getWorldVector(force),body.getWorldPoint(point));
@@ -124,5 +161,36 @@ public class Robot extends MovableObject {
     public void RightMotorImpulse(float i) {
         force.y = i*30.0f;
         rightWheel.applyLinearImpulse(rightWheel.getWorldVector(force),rightWheel.getWorldCenter(),true);
+    }
+    public boolean FrontSensorTouching() {
+        return frontSensorTouching;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        if(a.getBody().equals(frontSensor) || b.getBody().equals(frontSensor)) {
+            frontSensorTouching = true;
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        if(a.getBody().equals(frontSensor) || b.getBody().equals(frontSensor)) {
+            frontSensorTouching = false;
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold manifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse contactImpulse) {
+
     }
 }
