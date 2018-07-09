@@ -3,19 +3,19 @@ package com.example.rhill.controllertest3;
 /**
  * Created by rhill on 7/8/18.
  */
-
 public class OpModeVish extends FakeOpMode {
+
+
     int xstate = 0;
    private boolean tankmode = true;
    private boolean steeringmode = false;
    private float rot = 0;
     private float speedmod = 1;
 
-
-
     public void init() {
         this.telemetry.AddData(this.getClass().getSimpleName(), "Started");
     }
+
     public void init_loop() {
     }
     public void loop() {
