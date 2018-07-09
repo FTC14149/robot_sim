@@ -5,8 +5,6 @@ package com.example.rhill.controllertest3;
  */
 public class OpModeVish extends FakeOpMode {
 
-
-    int xstate = 0;
    private boolean tankmode = true;
    private boolean steeringmode = false;
    private float rot = 0;
@@ -54,7 +52,7 @@ public class OpModeVish extends FakeOpMode {
     }
 
     public void steeringmode() {
-        if(steeringmode=true) {
+        if(steeringmode==true) {
             rot = gamepad1.left_stick_x;
 
             robot.LeftMotorTorque((gamepad1.right_stick_y  + rot) * speedmod);
