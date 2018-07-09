@@ -6,10 +6,10 @@ package com.example.rhill.controllertest3;
 
 public class OpModeVish extends FakeOpMode {
     int xstate = 0;
-    boolean tankmode = true;
-    boolean steeringmode = false;
-    float rot = 0;
-    float speedmod = 1;
+   private boolean tankmode = true;
+   private boolean steeringmode = false;
+   private float rot = 0;
+    private float speedmod = 1;
 
 
 
