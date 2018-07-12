@@ -32,6 +32,7 @@ public class Robot extends MovableObject implements ContactListener {
     Body rightWheel;
     Body frontSensor;
     boolean frontSensorTouching;
+    Body lastTouchedBody;
     public Robot(World world, Body body, Bitmap bitmap, float x, float y) {
         super(body,bitmap);
         this.world = world;
@@ -165,13 +166,25 @@ public class Robot extends MovableObject implements ContactListener {
     public boolean FrontSensorTouching() {
         return frontSensorTouching;
     }
+    public void EnableMagnet(boolean enable) {
+        if(enable) {
+            if(lastTouchedBody != null) {
+                lastTouchedBody.applyForceToCenter(frontSensor.getWorldCenter().sub(lastTouchedBody.getWorldCenter()).mul(30.0f));
+            }
+        }
+    }
 
     @Override
     public void beginContact(Contact contact) {
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
-        if(a.getBody().equals(frontSensor) || b.getBody().equals(frontSensor)) {
+        if(a.getBody().equals(frontSensor)) {
             frontSensorTouching = true;
+            lastTouchedBody = b.getBody();
+        }
+        if(b.getBody().equals(frontSensor)) {
+            frontSensorTouching = true;
+            lastTouchedBody = a.getBody();
         }
     }
 
@@ -181,6 +194,7 @@ public class Robot extends MovableObject implements ContactListener {
         Fixture b = contact.getFixtureB();
         if(a.getBody().equals(frontSensor) || b.getBody().equals(frontSensor)) {
             frontSensorTouching = false;
+            //lastTouchedBody = null;
         }
     }
 

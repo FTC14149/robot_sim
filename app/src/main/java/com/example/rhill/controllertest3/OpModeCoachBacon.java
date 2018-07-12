@@ -31,6 +31,11 @@ public class OpModeCoachBacon extends FakeOpMode {
         } else {
             this.telemetry.AddData(this.getClass().getSimpleName(), "Not Touching");
         }
+        if(gamepad1.x) {
+            robot.EnableMagnet(true);
+        } else {
+            robot.EnableMagnet(false);
+        }
     }
     public void stop() {
     }
