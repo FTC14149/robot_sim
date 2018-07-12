@@ -176,6 +176,9 @@ public class Robot extends MovableObject implements ContactListener {
             }
         }
     }
+    public int Compass() {
+        return (((int)(57.295f*body.getAngle()) % 360) + 360) % 360;
+    }
 
     @Override
     public void beginContact(Contact contact) {
