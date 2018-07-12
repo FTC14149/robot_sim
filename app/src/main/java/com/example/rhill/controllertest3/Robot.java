@@ -169,7 +169,10 @@ public class Robot extends MovableObject implements ContactListener {
     public void EnableMagnet(boolean enable) {
         if(enable) {
             if(lastTouchedBody != null) {
-                lastTouchedBody.applyForceToCenter(frontSensor.getWorldCenter().sub(lastTouchedBody.getWorldCenter()).mul(30.0f));
+                Vec2 magnetVec = frontSensor.getWorldCenter().sub(lastTouchedBody.getWorldCenter());
+                if(magnetVec.length() < 0.3f) {
+                    lastTouchedBody.applyForceToCenter(magnetVec.mul(30.0f));
+                }
             }
         }
     }
