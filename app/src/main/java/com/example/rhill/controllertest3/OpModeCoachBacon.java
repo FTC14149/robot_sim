@@ -36,7 +36,9 @@ public class OpModeCoachBacon extends FakeOpMode {
         } else {
             robot.EnableMagnet(false);
         }
-        this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(robot.Compass()));
+        //this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(robot.Compass()));
+        Vec2 location = robot.Location();
+        this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(location.x)+","+String.valueOf(location.y));
     }
     public void stop() {
     }

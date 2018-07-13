@@ -179,6 +179,13 @@ public class Robot extends MovableObject implements ContactListener {
     public int Compass() {
         return (((int)(57.295f*body.getAngle()) % 360) + 360) % 360;
     }
+    public Vec2 Location() {
+        Vec2 center = body.getWorldCenter();
+        Vec2 loc = new Vec2();
+        loc.x = 100.0f*(center.x-0.22f)/(3.33f-0.22f);
+        loc.y = 100.0f*(center.y-0.22f)/(3.33f-0.22f);
+        return loc;
+    }
 
     @Override
     public void beginContact(Contact contact) {
