@@ -29,16 +29,17 @@ public class OpModeCoachBacon extends FakeOpMode {
         if(robot.frontSensorTouching) {
             this.telemetry.AddData(this.getClass().getSimpleName(), "Touching");
         } else {
-            //this.telemetry.AddData(this.getClass().getSimpleName(), "Not Touching");
+            this.telemetry.AddData(this.getClass().getSimpleName(), "Not Touching");
         }
         if(gamepad1.x) {
             robot.EnableMagnet(true);
         } else {
             robot.EnableMagnet(false);
         }
+        //this.telemetry.AddData("keycode", String.valueOf(gamepad1.lastKeyCode));
         //this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(robot.Compass()));
-        Vec2 location = robot.Location();
-        this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(location.x)+","+String.valueOf(location.y));
+        //Vec2 location = robot.Location();
+        //this.telemetry.AddData(this.getClass().getSimpleName(),String.valueOf(location.x)+","+String.valueOf(location.y));
     }
     public void stop() {
     }
