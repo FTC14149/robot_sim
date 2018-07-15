@@ -33,6 +33,7 @@ public class Robot extends MovableObject implements ContactListener {
     Body frontSensor;
     boolean frontSensorTouching;
     Body lastTouchedBody;
+    Boolean magnetEnabled;
     public Robot(World world, Body body, Bitmap bitmap, float x, float y) {
         super(body,bitmap);
         this.world = world;
