@@ -2,13 +2,18 @@ package com.example.rhill.controllertest3;
 
 import android.graphics.Bitmap;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.WeldJoint;
 import org.jbox2d.dynamics.joints.WeldJointDef;
 
@@ -16,7 +21,8 @@ import org.jbox2d.dynamics.joints.WeldJointDef;
  * Created by rhill on 5/6/18.
  */
 
-public class Robot extends MovableObject {
+public class Robot extends MovableObject implements ContactListener {
+    World world;
     public float speed;
     Vec2 leftwheel = new Vec2(-1.0f,1.0f);  // Location of left wheel in body coordinates
     Vec2 rightwheel = new Vec2(1.0f,1.0f);  // Location of right wheel in body coordinates
@@ -24,8 +30,12 @@ public class Robot extends MovableObject {
     Body robotBody;
     Body leftWheel;
     Body rightWheel;
+    Body frontSensor;
+    boolean frontSensorTouching;
+    Body lastTouchedBody;
     public Robot(World world, Body body, Bitmap bitmap, float x, float y) {
         super(body,bitmap);
+        this.world = world;
         float robotRadius = 0.19f/100.0f;
         float robotInitialPosition = 1.1f;
         // Robot body
@@ -100,29 +110,162 @@ public class Robot extends MovableObject {
         rightWheelJointDef.collideConnected = false;
         WeldJoint rightWheelJoint = (WeldJoint) world.createJoint(rightWheelJointDef);
 
+        BodyDef frontSensorDef = new BodyDef();
+        frontSensorDef.type = BodyType.DYNAMIC;
+        frontSensorDef.position.set(robotInitialPosition,robotInitialPosition-robotRadius-0.02f);
+        frontSensorDef.linearDamping = 10000000.0f;
+        frontSensorDef.angularDamping = 100.0f;
+        frontSensor = world.createBody(frontSensorDef);
+
+        PolygonShape frontSensorBox = new PolygonShape();
+        frontSensorBox.setAsBox(0.01f/2, 0.01f/2);
+        FixtureDef frontSensorFixtureDef = new FixtureDef();
+        frontSensorFixtureDef.shape = frontSensorBox;
+        frontSensorFixtureDef.setDensity(1);
+        frontSensorFixtureDef.friction = 0.3f;
+        frontSensorFixtureDef.restitution = 0.3f;
+        frontSensor.createFixture(frontSensorFixtureDef);
+
+        WeldJointDef frontSensorJointDef = new WeldJointDef();
+        frontSensorJointDef.bodyA = frontSensor;
+        frontSensorJointDef.bodyB = robotBody;
+        frontSensorJointDef.localAnchorA.x = 0.0f;
+        frontSensorJointDef.localAnchorA.y = 0.0f;
+        frontSensorJointDef.bodyB = robotBody;
+        frontSensorJointDef.localAnchorB.x = 0.0f;
+        frontSensorJointDef.localAnchorB.y = -0.21f;
+        frontSensorJointDef.collideConnected = false;
+        WeldJoint frontSensorJoint = (WeldJoint) world.createJoint(frontSensorJointDef);
+
         x = 200;
         y = 200;
         rot = 0;
         speed = 1;
+        world.setContactListener(this);
     }
+
+    /**
+     * Apply a vector force to a vector point.
+     * @param force - the force.
+     * @param point - the point.
+     */
     public void ApplyForce(Vec2 force, Vec2 point) {
         //body.applyForce(body.getWorldVector(force),body.getWorldPoint(point));
         body.applyForce(body.getWorldVector(force),body.getWorldPoint(point));
     }
-    public void LeftMotorTorque(float t) {
-        force.y = t*1000.0f;
+
+    /**
+     * Apply a force to the left wheel motor.
+     * @param torque - the force to apply.
+     */
+    public void LeftMotorTorque(float torque) {
+        force.y = torque*1000.0f;
         leftWheel.applyForce(leftWheel.getWorldVector(force),leftWheel.getWorldCenter());
     }
-    public void RightMotorTorque(float t) {
-        force.y = t*1000.0f;
+
+    /**
+     * Apply a force to the right wheel motor.
+     * @param torque - the force to apply.
+     */
+    public void RightMotorTorque(float torque) {
+        force.y = torque*1000.0f;
         rightWheel.applyForce(rightWheel.getWorldVector(force),rightWheel.getWorldCenter());
     }
-    public void LeftMotorImpulse(float i) {
-        force.y = i*30.0f;
+
+    /**
+     * Apply an impulse to the left wheel motor.
+     * @param impulse - the impulse to apply.
+     */
+    public void LeftMotorImpulse(float impulse) {
+        force.y = impulse*30.0f;
         leftWheel.applyLinearImpulse(leftWheel.getWorldVector(force),leftWheel.getWorldCenter(),true);
     }
-    public void RightMotorImpulse(float i) {
-        force.y = i*30.0f;
+
+    /**
+     * Apply an impulse to the right wheel motor.
+     * @param impulse - the impulse to apply.
+     */
+    public void RightMotorImpulse(float impulse) {
+        force.y = impulse*30.0f;
         rightWheel.applyLinearImpulse(rightWheel.getWorldVector(force),rightWheel.getWorldCenter(),true);
+    }
+
+    /**
+     * Returns whether front sensor is touching an object.
+     * @return true if front sensor is touching, false otherwise.
+     */
+    public boolean IsFrontSensorTouching()
+    {
+        return frontSensorTouching;
+    }
+
+    /**
+     * Controls magnet that can attract an object that is being touched.
+     * @param enable - true to enable magnet, false to disable it.
+     */
+    public void EnableMagnet(boolean enable) {
+        if(enable) {
+            if(lastTouchedBody != null) {
+                Vec2 magnetVec = frontSensor.getWorldCenter().sub(lastTouchedBody.getWorldCenter());
+                if(magnetVec.length() < 0.3f) {
+                    lastTouchedBody.applyForceToCenter(magnetVec.mul(30.0f));
+                }
+            }
+        }
+    }
+
+    /**
+     * Return direction the robot is headed in degrees.
+     * @return - the direction in degrees.
+     */
+    public int Compass()
+    {
+        return (((int)(57.295f*body.getAngle()) % 360) + 360) % 360;
+    }
+
+    /**
+     * Return the vector location of the robot body center.
+     * @return - vector location of robot center.
+     */
+    public Vec2 Location() {
+        Vec2 center = body.getWorldCenter();
+        Vec2 loc = new Vec2();
+        loc.x = 100.0f*(center.x-0.22f)/(3.33f-0.22f);
+        loc.y = 100.0f*(center.y-0.22f)/(3.33f-0.22f);
+        return loc;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        if(a.getBody().equals(frontSensor)) {
+            frontSensorTouching = true;
+            lastTouchedBody = b.getBody();
+        }
+        if(b.getBody().equals(frontSensor)) {
+            frontSensorTouching = true;
+            lastTouchedBody = a.getBody();
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        if(a.getBody().equals(frontSensor) || b.getBody().equals(frontSensor)) {
+            frontSensorTouching = false;
+            //lastTouchedBody = null;
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold manifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse contactImpulse) {
+
     }
 }

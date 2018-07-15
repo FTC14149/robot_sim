@@ -28,6 +28,7 @@ public class Gamepad {
         dpad_up = dpad_down = dpad_right = dpad_left = false;
     }
     public void HandleKeyEvent(int keyCode, boolean state) {
+        lastKeyCode = keyCode;
         // Gamepad events
         switch(keyCode) {
             case(KeyEvent.KEYCODE_DPAD_LEFT):
