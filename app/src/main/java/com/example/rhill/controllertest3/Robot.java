@@ -144,29 +144,66 @@ public class Robot extends MovableObject implements ContactListener {
         speed = 1;
         world.setContactListener(this);
     }
+
+    /**
+     * Apply a vector force to a vector point.
+     * @param force - the force.
+     * @param point - the point.
+     */
     public void ApplyForce(Vec2 force, Vec2 point) {
         //body.applyForce(body.getWorldVector(force),body.getWorldPoint(point));
         body.applyForce(body.getWorldVector(force),body.getWorldPoint(point));
     }
-    public void LeftMotorTorque(float t) {
-        force.y = t*1000.0f;
+
+    /**
+     * Apply a force to the left wheel motor.
+     * @param torque - the force to apply.
+     */
+    public void LeftMotorTorque(float torque) {
+        force.y = torque*1000.0f;
         leftWheel.applyForce(leftWheel.getWorldVector(force),leftWheel.getWorldCenter());
     }
-    public void RightMotorTorque(float t) {
-        force.y = t*1000.0f;
+
+    /**
+     * Apply a force to the right wheel motor.
+     * @param torque - the force to apply.
+     */
+    public void RightMotorTorque(float torque) {
+        force.y = torque*1000.0f;
         rightWheel.applyForce(rightWheel.getWorldVector(force),rightWheel.getWorldCenter());
     }
-    public void LeftMotorImpulse(float i) {
-        force.y = i*30.0f;
+
+    /**
+     * Apply an impulse to the left wheel motor.
+     * @param impulse - the impulse to apply.
+     */
+    public void LeftMotorImpulse(float impulse) {
+        force.y = impulse*30.0f;
         leftWheel.applyLinearImpulse(leftWheel.getWorldVector(force),leftWheel.getWorldCenter(),true);
     }
-    public void RightMotorImpulse(float i) {
-        force.y = i*30.0f;
+
+    /**
+     * Apply an impulse to the right wheel motor.
+     * @param impulse - the impulse to apply.
+     */
+    public void RightMotorImpulse(float impulse) {
+        force.y = impulse*30.0f;
         rightWheel.applyLinearImpulse(rightWheel.getWorldVector(force),rightWheel.getWorldCenter(),true);
     }
-    public boolean FrontSensorTouching() {
+
+    /**
+     * Returns whether front sensor is touching an object.
+     * @return true if front sensor is touching, false otherwise.
+     */
+    public boolean IsFrontSensorTouching()
+    {
         return frontSensorTouching;
     }
+
+    /**
+     * Controls magnet that can attract an object that is being touched.
+     * @param enable - true to enable magnet, false to disable it.
+     */
     public void EnableMagnet(boolean enable) {
         if(enable) {
             if(lastTouchedBody != null) {
@@ -177,9 +214,20 @@ public class Robot extends MovableObject implements ContactListener {
             }
         }
     }
-    public int Compass() {
+
+    /**
+     * Return direction the robot is headed in degrees.
+     * @return - the direction in degrees.
+     */
+    public int Compass()
+    {
         return (((int)(57.295f*body.getAngle()) % 360) + 360) % 360;
     }
+
+    /**
+     * Return the vector location of the robot body center.
+     * @return - vector location of robot center.
+     */
     public Vec2 Location() {
         Vec2 center = body.getWorldCenter();
         Vec2 loc = new Vec2();
