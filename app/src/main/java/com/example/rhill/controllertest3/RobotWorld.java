@@ -71,8 +71,8 @@ public class RobotWorld implements Runnable {
         robot = new Robot(physicsWorld, null ,robotBitmap, 0.5f, 0.2f);
         Bitmap boxBitmap = BitmapFactory.decodeResource(robotWorldView.getResources(),R.drawable.box,options);
         boxes = new ArrayList<MovableObject>();
-        for(int y=0;y<5;y++) {
-            for (int x = 0; x < 5; x++) {
+        for(int y=0;y<3;y++) {
+            for (int x = 0; x < 3; x++) {
                 Body boxBody = CreateBox(1.5f + 0.25f * x, 1.5f + 0.25f * y, 0.20f, 0.20f, 0.0001f, 0.3f);
                 box1 = new MovableObject(boxBody, boxBitmap);
                 boxes.add(box1);
