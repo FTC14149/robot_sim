@@ -28,9 +28,9 @@ public class OpModeVish extends FakeOpMode {
 
   }
 
-  private void stateAdvance(int var, int stateNumber) {
+  private void stateAdvance(int var, int numberOfStates) {
       var++;
-      if (var > stateNumber) var = 0;
+      if (var > numberOfStates) var = 0;
   }
 
   private void turnToX (int compassHeading) {
@@ -77,11 +77,6 @@ public class OpModeVish extends FakeOpMode {
           }
       }
 
-
-
-
-
-
     public void init() {
         this.telemetry.AddData(this.getClass().getSimpleName(), "Started");
     }
@@ -96,58 +91,6 @@ public class OpModeVish extends FakeOpMode {
         magnetToggle();
         driveToCornerOne();
         moveTillTouching();
-
-        if (gamepad1.b) {
-            wasBNotPressed = false;
-        }
-        else {
-            wasBNotPressed = true;
-        }
-        if (gamepad1.x) {
-            wasXNotPressed = false;
-        }
-        else {
-            wasXNotPressed = true;
-        }
-        if (gamepad1.a) {
-            wasANotPressed = false;
-        }
-        else {
-            wasANotPressed = true;
-        }
-        if (gamepad1.y) {
-            wasYNotPressed = false;
-        }
-        else {
-            wasYNotPressed = true;
-        }
-        if (gamepad1.dpad_down) {
-            wasDPadDownNotPressed = false;
-        }
-        else {
-            wasDPadDownNotPressed = true;
-        }
-        if (gamepad1.dpad_up) {
-            wasDPadUpNotPressed = false;
-        }
-        else {
-            wasDPadUpNotPressed = true;
-        }
-        if (gamepad1.dpad_left) {
-            wasDPadLeftNotPressed = false;
-        }
-        else {
-            wasDPadLeftNotPressed = true;
-        }
-        if (gamepad1.dpad_right) {
-            wasDPadRightNotPressed = false;
-        }
-        else {
-            wasDPadRightNotPressed = true;
-        }
-
-
-
 
        if (gamepad1.b&&wasBNotPressed) {
          stateAdvance(magEnabled, 1);
@@ -178,6 +121,55 @@ public class OpModeVish extends FakeOpMode {
        else if (gamepad1.dpad_right) {
            speedmod=3;
        }
+
+        if (gamepad1.b) {
+            wasBNotPressed = false;
+        }
+        else if (!gamepad1.b){
+            wasBNotPressed = true;
+        }
+        if (gamepad1.x) {
+            wasXNotPressed = false;
+        }
+        else if (!gamepad1.x) {
+            wasXNotPressed = true;
+        }
+        if (gamepad1.a) {
+            wasANotPressed = false;
+        }
+        else if (!gamepad1.a){
+            wasANotPressed = true;
+        }
+        if (gamepad1.y) {
+            wasYNotPressed = false;
+        }
+        else if (!gamepad1.y){
+            wasYNotPressed = true;
+        }
+        if (gamepad1.dpad_down) {
+            wasDPadDownNotPressed = false;
+        }
+        else if (!gamepad1.dpad_down){
+            wasDPadDownNotPressed = true;
+        }
+        if (gamepad1.dpad_up) {
+            wasDPadUpNotPressed = false;
+        }
+        else if (!gamepad1.dpad_up){
+            wasDPadUpNotPressed = true;
+        }
+        if (gamepad1.dpad_left) {
+            wasDPadLeftNotPressed = false;
+        }
+        else if (!gamepad1.dpad_left){
+            wasDPadLeftNotPressed = true;
+        }
+        if (gamepad1.dpad_right) {
+            wasDPadRightNotPressed = false;
+        }
+        else if (!gamepad1.dpad_right) {
+            wasDPadRightNotPressed = true;
+        }
 
 
 
