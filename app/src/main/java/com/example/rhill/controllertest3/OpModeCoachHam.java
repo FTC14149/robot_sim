@@ -4,6 +4,8 @@ package com.example.rhill.controllertest3;
  * Created by rhill on 7/8/18.
  */
 
+import org.jbox2d.common.Vec2;
+
 public class OpModeCoachHam extends FakeOpMode {
     float speed = 1;
     int count;
@@ -14,6 +16,11 @@ public class OpModeCoachHam extends FakeOpMode {
     public void init_loop() {
     }
     public void loop() {
+        int heading = robot.Compass();
+        Vec2 location = robot.Location();
+        this.telemetry.AddData("conpass:" + String.valueOf(heading), "location (" + String.valueOf(location.x) + "," + String.valueOf(location.y) + ")");
+        if(heading != 90)
+            robot.LeftMotorTorque(-1);
         if(gamepad1.x & gamepad1.b) {
             count = 30;
         }

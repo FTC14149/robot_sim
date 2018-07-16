@@ -5,22 +5,104 @@ package com.example.rhill.controllertest3;
  */
 
 public class OpModeVish extends FakeOpMode {
-    int xstate = 0;
+
    private boolean tankmode = true;
    private boolean steeringmode = false;
    private float rot = 0;
     private float speedmod = 1;
+    private int magEnabled = 0;
+    private int moveTillTouching = 0;
+    private int driveToCornerOne = 0;
+    private boolean wasBNotPressed;
+    private boolean wasANotPressed;
+    private boolean wasXNotPressed;
+    private boolean wasYNotPressed;
+    private boolean wasDPadDownNotPressed;
+    private boolean wasDPadUpNotPressed;
+    private boolean wasDPadRightNotPressed;
+    private boolean wasDPadLeftNotPressed;
 
 
+
+    private void test() {
+
+  }
+
+  private void stateAdvance(int var, int numberOfStates) {
+      var++;
+      if (var > numberOfStates) var = 0;
+  }
+
+  private void turnToX (int compassHeading) {
+      if (robot.Compass() != compassHeading) {
+          robot.LeftMotorTorque(-1);
+          robot.RightMotorTorque(1);
+      }
+      else {
+          robot.LeftMotorTorque(0);
+          robot.RightMotorTorque(0);
+      }
+  }
+
+  private void moveTillTouching() {
+      if (moveTillTouching == 1) {
+          if (robot.IsFrontSensorTouching()) {
+              robot.LeftMotorTorque(0);
+              robot.RightMotorTorque(0);
+          } else {
+              robot.LeftMotorTorque(30 * speedmod);
+              robot.RightMotorTorque(30 * speedmod);
+          }
+      }
+  }
+
+  private org.jbox2d.common.Vec2 getLocation() {
+      return robot.Location();
+  }
+
+  private void driveToCornerOne() {
+      if (driveToCornerOne == 1) {
+          turnToX(315);
+          robot.LeftMotorTorque(30 * speedmod);
+          robot.RightMotorTorque(30 * speedmod);
+      }
+  }
+
+  private void magnetToggle() {
+      if (magEnabled == 0) {
+         robot.EnableMagnet(false);
+         }
+         else if (magEnabled == 1) {
+              robot.EnableMagnet(true);
+          }
+      }
 
     public void init() {
         this.telemetry.AddData(this.getClass().getSimpleName(), "Started");
     }
+
+
     public void init_loop() {
     }
     public void loop() {
+        test();
         tankmode();
         steeringmode();
+        magnetToggle();
+        driveToCornerOne();
+        moveTillTouching();
+
+       if (gamepad1.b&&wasBNotPressed) {
+         stateAdvance(magEnabled, 1);
+       }
+       if (gamepad1.a&&wasANotPressed) {
+           stateAdvance(moveTillTouching, 1);
+       }
+
+       if (gamepad1.dpad_down&&wasDPadDownNotPressed) {
+          stateAdvance(driveToCornerOne,1 );
+       }
+
        if (gamepad1.x) {
            tankmode = true;
            steeringmode = false;
@@ -40,21 +122,69 @@ public class OpModeVish extends FakeOpMode {
            speedmod=3;
        }
 
+        if (gamepad1.b) {
+            wasBNotPressed = false;
+        }
+        else if (!gamepad1.b){
+            wasBNotPressed = true;
+        }
+        if (gamepad1.x) {
+            wasXNotPressed = false;
+        }
+        else if (!gamepad1.x) {
+            wasXNotPressed = true;
+        }
+        if (gamepad1.a) {
+            wasANotPressed = false;
+        }
+        else if (!gamepad1.a){
+            wasANotPressed = true;
+        }
+        if (gamepad1.y) {
+            wasYNotPressed = false;
+        }
+        else if (!gamepad1.y){
+            wasYNotPressed = true;
+        }
+        if (gamepad1.dpad_down) {
+            wasDPadDownNotPressed = false;
+        }
+        else if (!gamepad1.dpad_down){
+            wasDPadDownNotPressed = true;
+        }
+        if (gamepad1.dpad_up) {
+            wasDPadUpNotPressed = false;
+        }
+        else if (!gamepad1.dpad_up){
+            wasDPadUpNotPressed = true;
+        }
+        if (gamepad1.dpad_left) {
+            wasDPadLeftNotPressed = false;
+        }
+        else if (!gamepad1.dpad_left){
+            wasDPadLeftNotPressed = true;
+        }
+        if (gamepad1.dpad_right) {
+            wasDPadRightNotPressed = false;
+        }
+        else if (!gamepad1.dpad_right) {
+            wasDPadRightNotPressed = true;
+        }
 
 
 
     }
     public void stop() {
     }
-    public void tankmode() {
-    if (tankmode==true) {
+    private void tankmode() {
+    if (tankmode) {
         robot.LeftMotorTorque(gamepad1.left_stick_y * speedmod);
         robot.RightMotorTorque(gamepad1.right_stick_y * speedmod);
     }
     }
 
-    public void steeringmode() {
-        if(steeringmode=true) {
+    private void steeringmode() {
+        if(steeringmode) {
             rot = gamepad1.left_stick_x;
 
             robot.LeftMotorTorque((gamepad1.right_stick_y  + rot) * speedmod);
