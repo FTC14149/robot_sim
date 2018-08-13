@@ -31,6 +31,7 @@ public class OpModeMatthew extends FakeOpMode {
             if (mode == 3) {
                 mode = 0;
             }
+            this.telemetry.AddData("New Mode", String.valueOf(mode));
         }
         was_pressed = gamepad1.dpad_up;
         switch (mode) {
@@ -84,7 +85,7 @@ public class OpModeMatthew extends FakeOpMode {
                 }
                 break;
         }
-        this.telemetry.AddData("compass", String.valueOf(robot.Compass()));
+        //this.telemetry.AddData("compass", String.valueOf(robot.Compass()));
     }
 
 
