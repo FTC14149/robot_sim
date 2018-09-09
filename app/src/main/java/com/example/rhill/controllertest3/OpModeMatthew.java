@@ -9,10 +9,12 @@ public class OpModeMatthew extends FakeOpMode {
     public enum State {
         IDLE,
         MOVE,
-        TURN
+        TURN,
+        TURN_C
     }
     float speed;
     int count;
+    int target;
     boolean im_busy_turning;
     boolean run_away;
     int mode;
@@ -31,6 +33,16 @@ public class OpModeMatthew extends FakeOpMode {
     }
     public void init_loop() {
     }
+    public boolean turn(int target) {
+        int curr_d = robot.Compass();
+        int diff = curr_d - target;
+        robot.RightMotorTorque(-diff / 10.0f);
+        if (curr_d == target) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public void loop() {
         switch (myState) {
             case IDLE:
@@ -47,23 +59,37 @@ public class OpModeMatthew extends FakeOpMode {
                 robot.RightMotorTorque(2);
                 count = count + 1;
                 if(count >= 10) {
-                    myState = State.TURN;
+                    myState = State.TURN_C;
                     count = 0;
+                    target = robot.Compass() + 90;
+                    if (target > 359) {
+                        target = target - 359;
+                    }
+                    this.telemetry.AddData("Target", String.valueOf(target));
                 }
                 break;
-            case TURN:
-                robot.LeftMotorTorque(2);
-                robot.RightMotorTorque(-2);
-                count = count + 1;
-                if(count >= 10) {
-                    if(loop_count >=4) {
+//            case TURN:
+//                robot.LeftMotorTorque(2);
+//                robot.RightMotorTorque(-2);
+//                count = count + 1;
+//                if(count >= 10) {
+//                    if(loop_count >=4) {
+//                        myState = State.IDLE;
+//                    } else {
+//                        myState = State.MOVE;
+//                        loop_count = loop_count + 1;
+//                        count = 0;
+//                    }
+//                } break;
+            case TURN_C:
+                if (turn(target) == true) {
+                    if (loop_count >= 3) {
                         myState = State.IDLE;
                     } else {
                         myState = State.MOVE;
                         loop_count = loop_count + 1;
-                        count = 0;
                     }
-                } break;
+                }
 
         }
 //        ;
