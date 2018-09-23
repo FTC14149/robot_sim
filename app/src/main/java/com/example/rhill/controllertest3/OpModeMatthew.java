@@ -68,19 +68,6 @@ public class OpModeMatthew extends FakeOpMode {
                     this.telemetry.AddData("Target", String.valueOf(target));
                 }
                 break;
-//            case TURN:
-//                robot.LeftMotorTorque(2);
-//                robot.RightMotorTorque(-2);
-//                count = count + 1;
-//                if(count >= 10) {
-//                    if(loop_count >=4) {
-//                        myState = State.IDLE;
-//                    } else {
-//                        myState = State.MOVE;
-//                        loop_count = loop_count + 1;
-//                        count = 0;
-//                    }
-//                } break;
             case TURN_C:
                 if (turn(target) == true) {
                     if (loop_count >= 3) {
