@@ -31,6 +31,7 @@ public class RobotActivity extends AppCompatActivity {
     OpModeRaina opModeRaina;
     OpModeGabi opModeGabi;
     OpModeGus opModeGus;
+    OpModeMartin opModeMartin;
     RobotWorld robotWorld;
     RobotWorldView robotWorldView;
 
@@ -56,6 +57,7 @@ public class RobotActivity extends AppCompatActivity {
         opModeRaina = new OpModeRaina(); opModeRaina.Attach(robotWorld);
         opModeGabi = new OpModeGabi(); opModeGabi.Attach(robotWorld);
         opModeGus = new OpModeGus(); opModeGus.Attach(robotWorld);
+        opModeMartin = new OpModeMartin(); opModeMartin.Attach(robotWorld);
         // Start the physics loop in robotWorld
         robotWorld.StartPhysics();
         // Kick off the opmode
