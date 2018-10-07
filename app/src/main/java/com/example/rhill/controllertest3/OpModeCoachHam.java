@@ -35,7 +35,13 @@ public class OpModeCoachHam extends FakeOpMode {
         //this.telemetry.AddData("conpass:" + String.valueOf(heading), "location (" + String.valueOf(location.x) + "," + String.valueOf(location.y) + ")");
 
 
-
+        if(gamepad1.x) {
+            magnetEnabled = true;
+        }
+        if(gamepad1.y) {
+            magnetEnabled = false;
+        }
+        robot.EnableMagnet(magnetEnabled);
         switch(mystate) {
             case ENTERLENGTH:
                 count = 10;
@@ -97,13 +103,8 @@ public class OpModeCoachHam extends FakeOpMode {
 //        if (gamepad1.b & gamepad1.y) {
 //            speed = speed / 1.2f;
 //        }
-//        if(gamepad1.x) {
-//            magnetEnabled = true;
-//        }
-//        if(gamepad1.y) {
-//            magnetEnabled = false;
-//        }
-//        robot.EnableMagnet(magnetEnabled);
+//
+
 
     }
 
