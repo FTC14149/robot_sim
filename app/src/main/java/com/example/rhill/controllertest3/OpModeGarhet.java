@@ -4,7 +4,7 @@ package com.example.rhill.controllertest3;
  * Created by rhill on 7/8/18.
  */
 
-public class OpModeGabi extends FakeOpMode {
+public class OpModeGarhet extends FakeOpMode {
     public void init() {
         this.telemetry.AddData(this.getClass().getSimpleName(), "Started");
     }

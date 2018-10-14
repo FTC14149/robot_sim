@@ -29,7 +29,7 @@ public class RobotActivity extends AppCompatActivity {
     OpModeVish opModeVish;
     OpModeTyler opModeTyler;
     OpModeRaina opModeRaina;
-    OpModeGabi opModeGabi;
+    OpModeGarhet opModeGabi;
     OpModeGus opModeGus;
     OpModeMartin opModeMartin;
     OpModeKrish opModeKrish;
@@ -57,7 +57,7 @@ public class RobotActivity extends AppCompatActivity {
         opModeVish = new OpModeVish(); opModeVish.Attach(robotWorld);
         opModeTyler = new OpModeTyler(); opModeTyler.Attach(robotWorld);
         opModeRaina = new OpModeRaina(); opModeRaina.Attach(robotWorld);
-        opModeGabi = new OpModeGabi(); opModeGabi.Attach(robotWorld);
+        opModeGabi = new OpModeGarhet(); opModeGabi.Attach(robotWorld);
         opModeGus = new OpModeGus(); opModeGus.Attach(robotWorld);
         opModeMartin = new OpModeMartin(); opModeMartin.Attach(robotWorld);
         opModeKrish = new OpModeKrish(); opModeKrish.Attach(robotWorld);
